@@ -51,7 +51,7 @@ class Sprite {
   }
 }
 
-// Figher class.
+// Fighter class.
 class Fighter extends Sprite {
   constructor({
     position,
@@ -61,6 +61,7 @@ class Fighter extends Sprite {
     scale = 1,
     framesMax = 1,
     offset = { x: 0, y: 0 },
+    sprites,
   }) {
     super({
       position,
@@ -89,6 +90,12 @@ class Fighter extends Sprite {
     this.framesCurrent = 0;
     this.framesElapsed = 0;
     this.framesHold = 15;
+    this.sprites = sprites;
+
+    for (const sprite in this.sprites) {
+      sprites[sprite].image = new Image();
+      sprites[sprite].image.src = sprites[sprite].imageSrc;
+    }
   }
 
   update() {
@@ -111,5 +118,26 @@ class Fighter extends Sprite {
     setTimeout(() => {
       this.isAttacking = false;
     }, 100);
+  }
+
+  switchSprite(sprite) {
+    switch (sprite) {
+      case "idle":
+        if (this.image !== this.sprites.idle.image) {
+          this.image = this.sprites.idle.image;
+          this.framesMax = this.sprites.idle.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+      case "walk":
+        if (this.image !== this.sprites.walk.image) {
+          this.image = this.sprites.walk.image;
+          this.framesMax = this.sprites.walk.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+      case "jump":
+        break;
+    }
   }
 }

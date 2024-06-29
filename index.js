@@ -31,11 +31,21 @@ const player = new Fighter({
     y: 0,
   },
   imageSrc: "./assets/savageIdle.png",
-  framesMax: 2,
+  framesMax: 6,
   scale: 2.5,
   offset: {
     x: 14,
     y: 8,
+  },
+  sprites: {
+    idle: {
+      imageSrc: "./assets/savageIdle.png",
+      framesMax: 2,
+    },
+    walk: {
+      imageSrc: "./assets/savageWalk.png",
+      framesMax: 6,
+    },
   },
 });
 
@@ -72,6 +82,7 @@ const keys = {
 
 decreaseTimer();
 
+// Animations
 function animate() {
   window.requestAnimationFrame(animate);
   c.fillStyle = "black";
@@ -86,8 +97,12 @@ function animate() {
   // Player movement.
   if (keys.a.pressed && player.lastKey === "a") {
     player.velocity.x = -4;
+    player.switchSprite("walk");
   } else if (keys.d.pressed && player.lastKey === "d") {
     player.velocity.x = 4;
+    player.switchSprite("walk");
+  } else {
+    player.switchSprite("idle");
   }
 
   // Enemy movement.
