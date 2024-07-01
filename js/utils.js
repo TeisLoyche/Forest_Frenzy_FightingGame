@@ -10,6 +10,9 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
   );
 }
 
+/* Function for determining winner when timer runs out. If both players are alive, but one player has more health
+than the other, the player with the most health wins. If both players have same amount of health at the end of the round,
+it's a tie. */
 function determineWinner({ player, enemy, timerId }) {
   clearTimeout(timerId);
   document.querySelector("#displayText").style.display = "flex";
@@ -22,6 +25,7 @@ function determineWinner({ player, enemy, timerId }) {
   }
 }
 
+// Function for decreasing the round timer. 1 minute per round.
 let timer = 60;
 let timerId;
 function decreaseTimer() {
