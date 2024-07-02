@@ -55,6 +55,10 @@ const player = new Fighter({
       imageSrc: "./assets/savageFall.png",
       framesMax: 1,
     },
+    attack1: {
+      imageSrc: "./assets/savagePunch.png",
+      framesMax: 3,
+    },
   },
 });
 
