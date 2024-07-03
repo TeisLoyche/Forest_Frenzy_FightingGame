@@ -1,3 +1,4 @@
+// Collision function.
 function rectangularCollision({ rectangle1, rectangle2 }) {
   return (
     rectangle1.attackBox.position.x + rectangle1.attackBox.width >=
@@ -25,8 +26,8 @@ function determineWinner({ player, enemy, timerId }) {
   }
 }
 
-// Function for decreasing the round timer. 1 minute per round.
-let timer = 60;
+// Function for decreasing the round timer. 40 seconds per round.
+let timer = 40;
 let timerId;
 function decreaseTimer() {
   if (timer > 0) {

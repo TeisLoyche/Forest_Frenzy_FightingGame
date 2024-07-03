@@ -8,13 +8,10 @@ const c = canvas.getContext("2d");
 canvas.width = 1024;
 canvas.height = 576;
 
-// Creates a rectangle that fills the canvas, acting as background.
-c.fillRect(0, 0, canvas.width, canvas.height);
-
 // Gravity constant, pulls the sprite down +0.2 speed every frame.
 const gravity = 0.5;
 
-// Background.
+// Background for the level.
 const background = new Sprite({
   position: {
     x: 0,
@@ -38,6 +35,8 @@ const player = new Fighter({
     x: 14,
     y: 8,
   },
+
+  // All player 1 spritesheets.
   sprites: {
     idle: {
       imageSrc: "./assets/savageIdle.png",
@@ -59,6 +58,24 @@ const player = new Fighter({
       imageSrc: "./assets/savagePunch.png",
       framesMax: 3,
     },
+    hit: {
+      imageSrc: "./assets/savageHit.png",
+      framesMax: 3,
+    },
+    death: {
+      imageSrc: "./assets/savageDeath.png",
+      framesMax: 4,
+    },
+  },
+
+  // Player 1 attack box.
+  attackBox: {
+    offset: {
+      x: 63,
+      y: 25,
+    },
+    width: 50,
+    height: 20,
   },
 });
 
@@ -68,7 +85,7 @@ const enemy = new Fighter({
   velocity: { x: 0, y: 5 },
   color: "blue",
   offset: {
-    x: -50,
+    x: 0,
     y: 0,
   },
   imageSrc: "./assets/elfIdle.png",
@@ -78,6 +95,8 @@ const enemy = new Fighter({
     x: 14,
     y: 8,
   },
+
+  // All spritesheets for player 2.
   sprites: {
     idle: {
       imageSrc: "./assets/elfIdle.png",
@@ -99,6 +118,24 @@ const enemy = new Fighter({
       imageSrc: "./assets/elfPunch.png",
       framesMax: 3,
     },
+    hit: {
+      imageSrc: "./assets/elfHit.png",
+      framesMax: 3,
+    },
+    death: {
+      imageSrc: "./assets/elfDeath.png",
+      framesMax: 4,
+    },
+  },
+
+  // Player 2 attack box.
+  attackBox: {
+    offset: {
+      x: -20,
+      y: 0,
+    },
+    width: 60,
+    height: 60,
   },
 });
 
@@ -124,7 +161,7 @@ const keys = {
   },
 };
 
-// Calls the method for making the round-timer decrease from 60 to 0.
+// Calls the method for making the round-timer decrease from 40 to 0.
 decreaseTimer();
 
 // Animations
@@ -133,6 +170,11 @@ function animate() {
   c.fillStyle = "black";
   c.fillRect(0, 0, canvas.width, canvas.height);
   background.update();
+
+  // Adds a white opacity filter to the background.
+  c.fillStyle = "rgba(255, 255, 255, 0.05)";
+  c.fillRect(0, 0, canvas.width, canvas.height);
+
   player.update();
   enemy.update();
 
@@ -154,7 +196,7 @@ function animate() {
     if (player.position.y === 366) player.switchSprite("idle");
   }
 
-  // Jumping.
+  // Player 1 Jumping.
   if (player.velocity.y < 0) {
     player.switchSprite("jump");
   } else if (player.velocity.y > 0) {
@@ -176,6 +218,7 @@ function animate() {
     if (enemy.position.y === 366) enemy.switchSprite("idle");
   }
 
+  // Player 2 jumping.
   if (enemy.velocity.y < 0) {
     enemy.switchSprite("jump");
   } else if (enemy.velocity.y > 0) {
@@ -188,11 +231,17 @@ function animate() {
       rectangle1: player,
       rectangle2: enemy,
     }) &&
-    player.isAttacking
+    player.isAttacking &&
+    player.framesCurrent === 1
   ) {
+    enemy.hit();
     player.isAttacking = false;
-    enemy.health -= 20;
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+  }
+
+  // Player 1 miss.
+  if (player.isAttacking && player.framesCurrent === 1) {
+    player.isAttacking = false;
   }
 
   // Detect collision when player 2 is attacking.
@@ -201,11 +250,17 @@ function animate() {
       rectangle1: enemy,
       rectangle2: player,
     }) &&
-    enemy.isAttacking
+    enemy.isAttacking &&
+    enemy.framesCurrent === 1
   ) {
+    player.hit();
     enemy.isAttacking = false;
-    player.health -= 20;
     document.querySelector("#playerHealth").style.width = player.health + "%";
+  }
+
+  // Player 2 miss.
+  if (enemy.isAttacking && enemy.framesCurrent === 1) {
+    enemy.isAttacking = false;
   }
 
   // If a player's health reaches 0, end the round.
@@ -218,46 +273,51 @@ function animate() {
 animate();
 
 // Event listener for keys pressed for both players, performing action based on pressed key.
+// If a player dies, do not allow any more response to key-presses.
 window.addEventListener("keydown", (e) => {
-  switch (e.key) {
-    case "d":
-      keys.d.pressed = true;
-      player.lastKey = "d";
-      break;
-    case "a":
-      keys.a.pressed = true;
-      player.lastKey = "a";
-      break;
-    case "w":
-      if (player.position.y !== 366) {
-        keys.w.pressed = false;
-      } else {
-        player.velocity.y = -12;
-      }
-      break;
-    case " ":
-      player.attack();
-      break;
+  if (!player.dead) {
+    switch (e.key) {
+      case "d":
+        keys.d.pressed = true;
+        player.lastKey = "d";
+        break;
+      case "a":
+        keys.a.pressed = true;
+        player.lastKey = "a";
+        break;
+      case "w":
+        if (player.position.y !== 366) {
+          keys.w.pressed = false;
+        } else {
+          player.velocity.y = -12;
+        }
+        break;
+      case " ":
+        player.attack();
+        break;
+    }
   }
-  switch (e.key) {
-    case "ArrowRight":
-      keys.ArrowRight.pressed = true;
-      enemy.lastKey = "ArrowRight";
-      break;
-    case "ArrowLeft":
-      keys.ArrowLeft.pressed = true;
-      enemy.lastKey = "ArrowLeft";
-      break;
-    case "ArrowUp":
-      if (enemy.position.y !== 366) {
-        keys.ArrowUp.presseed = false;
-      } else {
-        enemy.velocity.y = -12;
-      }
-      break;
-    case "ArrowDown":
-      enemy.attack();
-      break;
+  if (!enemy.dead) {
+    switch (e.key) {
+      case "ArrowRight":
+        keys.ArrowRight.pressed = true;
+        enemy.lastKey = "ArrowRight";
+        break;
+      case "ArrowLeft":
+        keys.ArrowLeft.pressed = true;
+        enemy.lastKey = "ArrowLeft";
+        break;
+      case "ArrowUp":
+        if (enemy.position.y !== 366) {
+          keys.ArrowUp.presseed = false;
+        } else {
+          enemy.velocity.y = -12;
+        }
+        break;
+      case "ArrowDown":
+        enemy.attack();
+        break;
+    }
   }
 });
 

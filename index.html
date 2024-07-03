@@ -1,7 +1,17 @@
 <head>
+  <!-- Old school text font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- General style -->
   <style>
     * {
       box-sizing: border-box;
+      font-family: "Press Start 2P";
     }
   </style>
 </head>
@@ -20,18 +30,20 @@
       <div
         style="
           position: relative;
-          height: 30px;
           width: 100%;
           display: flex;
           justify-content: flex-end;
+          border-top: 4px solid black;
+          border-left: 4px solid black;
+          border-bottom: 4px solid black;
         "
       >
-        <div style="background-color: yellow; height: 30px; width: 100%"></div>
+        <div style="background-color: maroon; height: 30px; width: 100%"></div>
         <div
           id="playerHealth"
           style="
             position: absolute;
-            background: blue;
+            background: red;
             top: 0;
             right: 0;
             bottom: 0;
@@ -44,26 +56,33 @@
       <div
         id="timer"
         style="
-          background-color: red;
+          background-color: orange;
           width: 100px;
-          height: 100px;
+          height: 50px;
           flex-shrink: 0;
           display: flex;
           align-items: center;
           justify-content: center;
+          border: 4px solid black;
         "
-      >
-        10
-      </div>
+      ></div>
 
       <!-- enemy health -->
-      <div style="position: relative; height: 30px; width: 100%">
-        <div style="background-color: yellow; height: 30px"></div>
+      <div
+        style="
+          position: relative;
+          width: 100%;
+          border-top: 4px solid black;
+          border-right: 4px solid black;
+          border-bottom: 4px solid black;
+        "
+      >
+        <div style="background-color: maroon; height: 30px"></div>
         <div
           id="enemyHealth"
           style="
             position: absolute;
-            background: blue;
+            background: red;
             top: 0;
             right: 0;
             bottom: 0;
@@ -85,12 +104,11 @@
         left: 0;
         display: none;
       "
-    >
-      Tie
-    </div>
+    ></div>
     <canvas></canvas>
   </div>
 
+  <!-- JavaScript -->
   <script src="js/utils.js"></script>
   <script src="js/classes.js"></script>
   <script src="index.js"></script>
