@@ -25,7 +25,7 @@ const background = new Sprite({
 
 // Creates player 1 from the fighter class, spawning the player on the screen at a given location.
 const player = new Fighter({
-  position: { x: 0, y: 366 },
+  position: { x: 200, y: 366 },
   velocity: { x: 0, y: 10 },
   offset: {
     x: 0,
@@ -64,12 +64,41 @@ const player = new Fighter({
 
 // Creates player 2 from the fighter class, spawning the player on the screen at a given location.
 const enemy = new Fighter({
-  position: { x: 400, y: 150 },
+  position: { x: 730, y: 366 },
   velocity: { x: 0, y: 5 },
   color: "blue",
   offset: {
     x: -50,
     y: 0,
+  },
+  imageSrc: "./assets/elfIdle.png",
+  framesMax: 2,
+  scale: 2.5,
+  offset: {
+    x: 14,
+    y: 8,
+  },
+  sprites: {
+    idle: {
+      imageSrc: "./assets/elfIdle.png",
+      framesMax: 2,
+    },
+    walk: {
+      imageSrc: "./assets/elfWalk.png",
+      framesMax: 6,
+    },
+    jump: {
+      imageSrc: "./assets/elfJump.png",
+      framesMax: 1,
+    },
+    fall: {
+      imageSrc: "./assets/elfFall.png",
+      framesMax: 1,
+    },
+    attack1: {
+      imageSrc: "./assets/elfPunch.png",
+      framesMax: 3,
+    },
   },
 });
 
@@ -105,7 +134,7 @@ function animate() {
   c.fillRect(0, 0, canvas.width, canvas.height);
   background.update();
   player.update();
-  // enemy.update();
+  enemy.update();
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
@@ -135,8 +164,22 @@ function animate() {
   // Player 2 movement.
   if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
     enemy.velocity.x = -4;
+    if (enemy.position.y === 366) {
+      enemy.switchSprite("walk");
+    }
   } else if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
     enemy.velocity.x = 4;
+    if (enemy.position.y === 366) {
+      enemy.switchSprite("walk");
+    }
+  } else {
+    if (enemy.position.y === 366) enemy.switchSprite("idle");
+  }
+
+  if (enemy.velocity.y < 0) {
+    enemy.switchSprite("jump");
+  } else if (enemy.velocity.y > 0) {
+    enemy.switchSprite("fall");
   }
 
   // Detect collision when player 1 is attacking.
@@ -186,7 +229,11 @@ window.addEventListener("keydown", (e) => {
       player.lastKey = "a";
       break;
     case "w":
-      player.velocity.y = -12;
+      if (player.position.y !== 366) {
+        keys.w.pressed = false;
+      } else {
+        player.velocity.y = -12;
+      }
       break;
     case " ":
       player.attack();
@@ -202,7 +249,11 @@ window.addEventListener("keydown", (e) => {
       enemy.lastKey = "ArrowLeft";
       break;
     case "ArrowUp":
-      enemy.velocity.y = -10;
+      if (enemy.position.y !== 366) {
+        keys.ArrowUp.presseed = false;
+      } else {
+        enemy.velocity.y = -12;
+      }
       break;
     case "ArrowDown":
       enemy.attack();
