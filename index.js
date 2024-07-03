@@ -20,6 +20,20 @@ const background = new Sprite({
   imageSrc: "./assets/levelBackground.png",
 });
 
+// Sounds & Music.
+// Sword swing.
+let swordSound = new Audio("./assets/sword.mp3");
+swordSound.volume = 0.5;
+// Sword hit.
+let swordHit = new Audio("./assets/swordHit.mp3");
+swordHit.volume = 0.4;
+// Punch swing.
+let punchSound = new Audio("./assets/punchMiss.mp3");
+punchSound.volume = 0.2;
+// Punch hit.
+let punchHit = new Audio("./assets/punchHit.mp3");
+punchHit.volume = 0.1;
+
 // Creates player 1 from the fighter class, spawning the player on the screen at a given location.
 const player = new Fighter({
   position: { x: 200, y: 366 },
@@ -235,6 +249,7 @@ function animate() {
     player.framesCurrent === 1
   ) {
     enemy.hit();
+    punchHit.play();
     player.isAttacking = false;
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
   }
@@ -254,6 +269,7 @@ function animate() {
     enemy.framesCurrent === 1
   ) {
     player.hit();
+    swordHit.play();
     enemy.isAttacking = false;
     document.querySelector("#playerHealth").style.width = player.health + "%";
   }
@@ -294,6 +310,7 @@ window.addEventListener("keydown", (e) => {
         break;
       case " ":
         player.attack();
+        punchSound.play();
         break;
     }
   }
@@ -316,6 +333,7 @@ window.addEventListener("keydown", (e) => {
         break;
       case "ArrowDown":
         enemy.attack();
+        swordSound.play();
         break;
     }
   }
