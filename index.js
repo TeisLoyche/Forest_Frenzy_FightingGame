@@ -29,7 +29,7 @@ let swordHit = new Audio("./assets/swordHit.mp3");
 swordHit.volume = 0.4;
 // Punch swing.
 let punchSound = new Audio("./assets/punchMiss.mp3");
-punchSound.volume = 0.2;
+punchSound.volume = 0.1;
 // Punch hit.
 let punchHit = new Audio("./assets/punchHit.mp3");
 punchHit.volume = 0.1;
@@ -53,31 +53,31 @@ const player = new Fighter({
   // All player 1 spritesheets.
   sprites: {
     idle: {
-      imageSrc: "./assets/savageIdle.png",
+      imageSrc: "./assets/savageIdle2.png",
       framesMax: 2,
     },
     walk: {
-      imageSrc: "./assets/savageWalk.png",
+      imageSrc: "./assets/savageWalk2.png",
       framesMax: 6,
     },
     jump: {
-      imageSrc: "./assets/savageJump.png",
+      imageSrc: "./assets/savageJump2.png",
       framesMax: 1,
     },
     fall: {
-      imageSrc: "./assets/savageFall.png",
+      imageSrc: "./assets/savageFall2.png",
       framesMax: 1,
     },
     attack1: {
-      imageSrc: "./assets/savagePunch.png",
+      imageSrc: "./assets/savagePunch2.png",
       framesMax: 3,
     },
     hit: {
-      imageSrc: "./assets/savageHit.png",
+      imageSrc: "./assets/savageHit2.png",
       framesMax: 3,
     },
     death: {
-      imageSrc: "./assets/savageDeath.png",
+      imageSrc: "./assets/savageDeath2.png",
       framesMax: 4,
     },
   },
@@ -113,31 +113,31 @@ const enemy = new Fighter({
   // All spritesheets for player 2.
   sprites: {
     idle: {
-      imageSrc: "./assets/elfIdle.png",
+      imageSrc: "./assets/elfIdle2.png",
       framesMax: 2,
     },
     walk: {
-      imageSrc: "./assets/elfWalk.png",
+      imageSrc: "./assets/elfWalk2.png",
       framesMax: 6,
     },
     jump: {
-      imageSrc: "./assets/elfJump.png",
+      imageSrc: "./assets/elfJump2.png",
       framesMax: 1,
     },
     fall: {
-      imageSrc: "./assets/elfFall.png",
+      imageSrc: "./assets/elfFall2.png",
       framesMax: 1,
     },
     attack1: {
-      imageSrc: "./assets/elfPunch.png",
+      imageSrc: "./assets/elfPunch2.png",
       framesMax: 3,
     },
     hit: {
-      imageSrc: "./assets/elfHit.png",
+      imageSrc: "./assets/elfHit2.png",
       framesMax: 3,
     },
     death: {
-      imageSrc: "./assets/elfDeath.png",
+      imageSrc: "./assets/elfDeath2.png",
       framesMax: 4,
     },
   },
@@ -175,7 +175,7 @@ const keys = {
   },
 };
 
-// Calls the method for making the round-timer decrease from 40 to 0.
+// Calls the method for making the round-timer decrease to 0.
 decreaseTimer();
 
 // Animations
@@ -185,7 +185,7 @@ function animate() {
   c.fillRect(0, 0, canvas.width, canvas.height);
   background.update();
 
-  // Adds a white opacity filter to the background.
+  // Adds a white opacity filter to the background, making the fighters stick out a little more.
   c.fillStyle = "rgba(255, 255, 255, 0.05)";
   c.fillRect(0, 0, canvas.width, canvas.height);
 

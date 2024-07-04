@@ -26,8 +26,8 @@ function determineWinner({ player, enemy, timerId }) {
   }
 }
 
-// Function for decreasing the round timer. 40 seconds per round.
-let timer = 40;
+// Function for decreasing the round timer. 30 seconds per round.
+let timer = 30;
 let timerId;
 function decreaseTimer() {
   if (timer > 0) {
