@@ -14,14 +14,16 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
 /* Function for determining winner when timer runs out. If both players are alive, but one player has more health
 than the other, the player with the most health wins. If both players have same amount of health at the end of the round,
 it's a tie. */
-function determineWinner({ player, enemy, timerId }) {
+function determineWinner({ player, player2, timerId }) {
   clearTimeout(timerId);
   document.querySelector("#displayText").style.display = "flex";
-  if (player.health === enemy.health) {
+  if (player.health === player2.health) {
     document.querySelector("#displayText").innerHTML = "Tie";
-  } else if (player.health > enemy.health) {
+    player.tied = true;
+    player2.tied = true;
+  } else if (player.health > player2.health) {
     document.querySelector("#displayText").innerHTML = "Savage Wins";
-  } else if (enemy.health > player.health) {
+  } else if (player2.health > player.health) {
     document.querySelector("#displayText").innerHTML = "Elf Wins";
   }
 }
@@ -37,6 +39,6 @@ function decreaseTimer() {
   }
 
   if (timer === 0) {
-    determineWinner({ player, enemy, timerId });
+    determineWinner({ player, player2, timerId });
   }
 }

@@ -96,6 +96,7 @@ class Fighter extends Sprite {
     this.framesHold = 10;
     this.sprites = sprites;
     this.dead = false;
+    this.tied = false;
 
     // Switching sprites depending on action.
     for (const sprite in this.sprites) {
@@ -104,7 +105,7 @@ class Fighter extends Sprite {
     }
   }
 
-  // Update method, updating the draw method with each frame.
+  // Update method, updating the draw method with each frame. If a player is dead, freeze all animations for that player.
   update() {
     this.draw();
     if (!this.dead) this.animateFrames();
@@ -125,12 +126,13 @@ class Fighter extends Sprite {
     this.position.y += this.velocity.y;
 
     // Gravity.
-    if (this.position.y + this.height + this.velocity.y >= canvas.height - 60) {
+    if (this.position.y + this.height + this.velocity.y >= canvas.height - 80) {
       this.velocity.y = 0;
-      this.position.y = 366;
+      this.position.y = 420;
     } else this.velocity.y += gravity;
 
     console.log(this.position.y);
+    console.log(this.position.x);
   }
 
   // Player attack.

@@ -5,8 +5,8 @@ const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
 // Sets the canvas width and height.
-canvas.width = 1024;
-canvas.height = 576;
+canvas.width = 1144;
+canvas.height = 644;
 
 // Gravity constant, pulls the sprite down +0.2 speed every frame.
 const gravity = 0.5;
@@ -17,10 +17,10 @@ const background = new Sprite({
     x: 0,
     y: 0,
   },
-  imageSrc: "./assets/levelBackground.png",
+  imageSrc: "./assets/levelBackground2.png",
 });
 
-// Sounds & Music.
+// Sounds.
 // Sword swing.
 let swordSound = new Audio("./assets/sword.mp3");
 swordSound.volume = 0.5;
@@ -36,7 +36,7 @@ punchHit.volume = 0.1;
 
 // Creates player 1 from the fighter class, spawning the player on the screen at a given location.
 const player = new Fighter({
-  position: { x: 200, y: 366 },
+  position: { x: 234, y: 420 },
   velocity: { x: 0, y: 10 },
   offset: {
     x: 0,
@@ -94,8 +94,8 @@ const player = new Fighter({
 });
 
 // Creates player 2 from the fighter class, spawning the player on the screen at a given location.
-const enemy = new Fighter({
-  position: { x: 730, y: 366 },
+const player2 = new Fighter({
+  position: { x: 842, y: 420 },
   velocity: { x: 0, y: 5 },
   color: "blue",
   offset: {
@@ -185,29 +185,35 @@ function animate() {
   c.fillRect(0, 0, canvas.width, canvas.height);
   background.update();
 
-  // Adds a white opacity filter to the background, making the fighters stick out a little more.
+  // Adds a slight white opacity filter to the background, making the fighters pop a bit more.
   c.fillStyle = "rgba(255, 255, 255, 0.05)";
   c.fillRect(0, 0, canvas.width, canvas.height);
 
   player.update();
-  enemy.update();
+  player2.update();
 
   player.velocity.x = 0;
-  enemy.velocity.x = 0;
+  player2.velocity.x = 0;
 
   // Player 1 movement.
   if (keys.a.pressed && player.lastKey === "a") {
     player.velocity.x = -4;
-    if (player.position.y === 366) {
+    if (player.position.x <= -15) {
+      player.velocity.x = 0;
+    }
+    if (player.position.y === 420) {
       player.switchSprite("walk");
     }
   } else if (keys.d.pressed && player.lastKey === "d") {
     player.velocity.x = 4;
-    if (player.position.y === 366) {
+    if (player.position.x >= 1050) {
+      player.velocity.x = 0;
+    }
+    if (player.position.y === 420) {
       player.switchSprite("walk");
     }
   } else {
-    if (player.position.y === 366) player.switchSprite("idle");
+    if (player.position.y === 420) player.switchSprite("idle");
   }
 
   // Player 1 Jumping.
@@ -218,40 +224,46 @@ function animate() {
   }
 
   // Player 2 movement.
-  if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
-    enemy.velocity.x = -4;
-    if (enemy.position.y === 366) {
-      enemy.switchSprite("walk");
+  if (keys.ArrowLeft.pressed && player2.lastKey === "ArrowLeft") {
+    player2.velocity.x = -4;
+    if (player2.position.x <= -15) {
+      player2.velocity.x = 0;
     }
-  } else if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
-    enemy.velocity.x = 4;
-    if (enemy.position.y === 366) {
-      enemy.switchSprite("walk");
+    if (player2.position.y === 420) {
+      player2.switchSprite("walk");
+    }
+  } else if (keys.ArrowRight.pressed && player2.lastKey === "ArrowRight") {
+    player2.velocity.x = 4;
+    if (player2.position.x >= 1050) {
+      player2.velocity.x = 0;
+    }
+    if (player2.position.y === 420) {
+      player2.switchSprite("walk");
     }
   } else {
-    if (enemy.position.y === 366) enemy.switchSprite("idle");
+    if (player2.position.y === 420) player2.switchSprite("idle");
   }
 
   // Player 2 jumping.
-  if (enemy.velocity.y < 0) {
-    enemy.switchSprite("jump");
-  } else if (enemy.velocity.y > 0) {
-    enemy.switchSprite("fall");
+  if (player2.velocity.y < 0) {
+    player2.switchSprite("jump");
+  } else if (player2.velocity.y > 0) {
+    player2.switchSprite("fall");
   }
 
   // Detect collision when player 1 is attacking.
   if (
     rectangularCollision({
       rectangle1: player,
-      rectangle2: enemy,
+      rectangle2: player2,
     }) &&
     player.isAttacking &&
     player.framesCurrent === 1
   ) {
-    enemy.hit();
+    player2.hit();
     punchHit.play();
     player.isAttacking = false;
-    document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+    document.querySelector("#enemyHealth").style.width = player2.health + "%";
   }
 
   // Player 1 miss.
@@ -262,26 +274,26 @@ function animate() {
   // Detect collision when player 2 is attacking.
   if (
     rectangularCollision({
-      rectangle1: enemy,
+      rectangle1: player2,
       rectangle2: player,
     }) &&
-    enemy.isAttacking &&
-    enemy.framesCurrent === 1
+    player2.isAttacking &&
+    player2.framesCurrent === 1
   ) {
     player.hit();
     swordHit.play();
-    enemy.isAttacking = false;
+    player2.isAttacking = false;
     document.querySelector("#playerHealth").style.width = player.health + "%";
   }
 
   // Player 2 miss.
-  if (enemy.isAttacking && enemy.framesCurrent === 1) {
-    enemy.isAttacking = false;
+  if (player2.isAttacking && player2.framesCurrent === 1) {
+    player2.isAttacking = false;
   }
 
   // If a player's health reaches 0, end the round.
-  if (enemy.health <= 0 || player.health <= 0) {
-    determineWinner({ player, enemy, timerId });
+  if (player2.health <= 0 || player.health <= 0) {
+    determineWinner({ player, player2, timerId });
   }
 }
 
@@ -289,54 +301,57 @@ function animate() {
 animate();
 
 // Event listener for keys pressed for both players, performing action based on pressed key.
-// If a player dies, do not allow any more response to key-presses.
+// If a player dies, the player's controls are frozen.
+// In case there is a tie, both players controls are frozen so that the battle cannot continue.
 window.addEventListener("keydown", (e) => {
-  if (!player.dead) {
-    switch (e.key) {
-      case "d":
-        keys.d.pressed = true;
-        player.lastKey = "d";
-        break;
-      case "a":
-        keys.a.pressed = true;
-        player.lastKey = "a";
-        break;
-      case "w":
-        if (player.position.y !== 366) {
-          keys.w.pressed = false;
-        } else {
-          player.velocity.y = -12;
-        }
-        break;
-      case " ":
-        player.attack();
-        punchSound.play();
-        break;
+  if (!player.tied)
+    if (!player.dead) {
+      switch (e.key) {
+        case "d":
+          keys.d.pressed = true;
+          player.lastKey = "d";
+          break;
+        case "a":
+          keys.a.pressed = true;
+          player.lastKey = "a";
+          break;
+        case "w":
+          if (player.position.y !== 420) {
+            keys.w.pressed = false;
+          } else {
+            player.velocity.y = -12;
+          }
+          break;
+        case " ":
+          player.attack();
+          punchSound.play();
+          break;
+      }
     }
-  }
-  if (!enemy.dead) {
-    switch (e.key) {
-      case "ArrowRight":
-        keys.ArrowRight.pressed = true;
-        enemy.lastKey = "ArrowRight";
-        break;
-      case "ArrowLeft":
-        keys.ArrowLeft.pressed = true;
-        enemy.lastKey = "ArrowLeft";
-        break;
-      case "ArrowUp":
-        if (enemy.position.y !== 366) {
-          keys.ArrowUp.presseed = false;
-        } else {
-          enemy.velocity.y = -12;
-        }
-        break;
-      case "ArrowDown":
-        enemy.attack();
-        swordSound.play();
-        break;
+  if (!player2.tied)
+    if (!player2.dead) {
+      switch (e.key) {
+        case "ArrowRight":
+          keys.ArrowRight.pressed = true;
+          player2.lastKey = "ArrowRight";
+          break;
+        case "ArrowLeft":
+          keys.ArrowLeft.pressed = true;
+          player2.lastKey = "ArrowLeft";
+          break;
+        case "ArrowUp":
+          if (player2.position.y !== 420) {
+            keys.ArrowUp.presseed = false;
+          } else {
+            player2.velocity.y = -12;
+          }
+          break;
+        case "ArrowDown":
+          player2.attack();
+          swordSound.play();
+          break;
+      }
     }
-  }
 });
 
 // Event listener for when a player lets go of a key to stop a given action.
