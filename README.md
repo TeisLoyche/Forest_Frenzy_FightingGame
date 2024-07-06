@@ -13,3 +13,6 @@ Arrow RIGHT (Move right)
 Arrow DOWN (Attack) 
 
 Have fun!
+
+Link to game, published via Netlify:
+https://main--forestfrenzy.netlify.app/
