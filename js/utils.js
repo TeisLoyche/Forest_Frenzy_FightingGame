@@ -17,14 +17,21 @@ it's a tie. */
 function determineWinner({ player, player2, timerId }) {
   clearTimeout(timerId);
   document.querySelector("#displayText").style.display = "flex";
+
   if (player.health === player2.health) {
-    document.querySelector("#displayText").innerHTML = "Tie";
+    document.querySelector("#displayText").innerHTML =
+      "Tie! <br> <br> Press R to restart";
     player.tied = true;
     player2.tied = true;
+    restartGame();
   } else if (player.health > player2.health) {
-    document.querySelector("#displayText").innerHTML = "Savage Wins";
+    document.querySelector("#displayText").innerHTML =
+      "Savage Wins! <br> <br> Press R to restart";
+    restartGame();
   } else if (player2.health > player.health) {
-    document.querySelector("#displayText").innerHTML = "Elf Wins";
+    document.querySelector("#displayText").innerHTML =
+      "Elf Wins! <br> <br> Press R to restart";
+    restartGame();
   }
 }
 
@@ -41,4 +48,15 @@ function decreaseTimer() {
   if (timer === 0) {
     determineWinner({ player, player2, timerId });
   }
+}
+
+// Function to restart the game by pressing "r" whenever a player wins / if there is a tie.
+function restartGame() {
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "r") {
+      window.location.reload();
+    } else {
+      keys.r.pressed = false;
+    }
+  });
 }
